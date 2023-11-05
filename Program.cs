@@ -20,7 +20,7 @@ ConfigurationManager configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    //options.UseSqlServer(System.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddControllers();

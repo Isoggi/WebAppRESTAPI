@@ -69,6 +69,7 @@ namespace WebAppRESTAPI.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] CreateLoginViewModel model)
         {
