@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebAppRESTAPI.Models;
 
-namespace WebAppRESTAPI.Auth
+namespace WebAppRESTAPI.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
@@ -17,5 +17,7 @@ namespace WebAppRESTAPI.Auth
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Product> Products { get; set; }
+        //public DbSet<User> Users { get; set; }
     }
 }
