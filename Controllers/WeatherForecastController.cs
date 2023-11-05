@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using WebAppRESTAPI.Model;
+using WebAppRESTAPI.Models;
 
 namespace WebAppRESTAPI.Controllers
 {

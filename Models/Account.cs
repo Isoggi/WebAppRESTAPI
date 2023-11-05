@@ -1,6 +1,6 @@
 ﻿namespace WebAppRESTAPI.Models
 {
-    public class Product
+    public class Account
     {
     }
 }
