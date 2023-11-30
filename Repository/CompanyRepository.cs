@@ -26,12 +26,18 @@ namespace WebAppRESTAPI.Repository
         public async Task<Company> Update(Company company)
         {
             Company result = new Company();
+
+            Func<Company, Company> Test = (input) =>
+            {
+                Company result = new Company();
+                return result;
+            };
             return result;
         }
         public async Task<bool> Delete(string id)
         {
             bool result = false;
-            return result;
+            return result;;
         }
     }
 }

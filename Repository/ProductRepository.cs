@@ -1,8 +1,9 @@
 ﻿using WebAppRESTAPI.Models;
+using WebAppRESTAPI.Repository.Interface;
 
 namespace WebAppRESTAPI.Repository
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         public async Task<List<Product>> GetList(string keyword = null)
         {

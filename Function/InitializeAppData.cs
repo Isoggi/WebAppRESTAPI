@@ -14,18 +14,21 @@ namespace WebAppRESTAPI.Function
     }
     public class InitializeAppData : IInitializeAppData
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        public InitializeAppData(UserManager<IdentityUser> userManager,
-               RoleManager<IdentityRole> roleManager,
+        private readonly AppIdentityDbContext _userContext;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public InitializeAppData(UserManager<ApplicationUser> userManager,
+               RoleManager<ApplicationRole> roleManager,
                ApplicationDbContext context,
-               SignInManager<IdentityUser> signInManager)
+               AppIdentityDbContext userContext,
+               SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _userContext = userContext;
             _signInManager = signInManager;
         }
 
@@ -40,20 +43,20 @@ namespace WebAppRESTAPI.Function
                     Password = "@1234Abcd"
                 };
                 List<Product> products = new List<Product>() {
-                    new Product{Name = "Product A"},
+                    new Product{Name = "Product A", Description = "Description A"},
                 };
 
                 await _context.Products.AddRangeAsync(products);
                 await _context.SaveChangesAsync();
 
                 List<Company> companies = new List<Company>() {
-                    new Company{Name = "Hanari Carnes", Address = "Rua do Paço, 67"},
+                    new Company{ Name = "Company A", Address = "Address A" , City = "City A", Province = "Province A" },
                 };
 
                 await _context.Companies.AddRangeAsync(companies);
                 await _context.SaveChangesAsync();
 
-                IdentityUser user = new IdentityUser();
+                ApplicationUser user = new ApplicationUser();
                 user.Email = _userDefaultOptions.Email;
                 user.UserName = _userDefaultOptions.Username;
                 user.EmailConfirmed = true;
@@ -63,12 +66,12 @@ namespace WebAppRESTAPI.Function
                 if (result.Succeeded)
                 {
                     //add to user profile
-                    User profile = new User();
+                    ApplicationUser profile = new ApplicationUser();
                     profile.UserName = user.UserName;
                     profile.Email = user.Email;
                     profile.Id = user.Id;
-                    await _context.Users.AddAsync(profile);
-                    await _context.SaveChangesAsync();
+                    await _userContext.Users.AddAsync(profile);
+                    await _userContext.SaveChangesAsync();
 
                     var userData = await _userManager.FindByIdAsync(user.Id);
                     if (userData != null)

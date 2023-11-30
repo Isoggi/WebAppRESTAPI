@@ -23,6 +23,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -34,7 +39,8 @@ builder.Services.AddSwaggerGen(service =>
         Version = "v1",
         Title = "WebAPI Apps",
         Description = "An ASP.NET Core Web API for test",
-        TermsOfService = new Uri("https://example.com/terms"),
+        TermsOfService =
+            new Uri("https://www.termsfeed.com/live/fd292ee7-a696-4794-a356-c463180906a5"),
         Contact = new OpenApiContact
         { Name = "Kristanto Saptadi Nugraha", Email = "kristantosaptadi@gmail.com" },
         License = new OpenApiLicense
@@ -44,14 +50,15 @@ builder.Services.AddSwaggerGen(service =>
         }
     });
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+    .AddEntityFrameworkStores<AppIdentityDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "https://login.yourdomain.com";
+        //options.Authority = "https://localhost:";
+        options.Authority = configuration["JWT:ValidIssuer"];
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -63,18 +70,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddTransient<InitializeAppData>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
+builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userContext = services.GetRequiredService<AppIdentityDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
         var initializeAppData = services.GetRequiredService<InitializeAppData>();
 
-        DbInitializer.Initialize(context, initializeAppData).Wait();
+        DbInitializer.Initialize(userContext, context, initializeAppData).Wait();
     }
     catch (Exception ex)
     {

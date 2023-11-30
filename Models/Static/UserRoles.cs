@@ -1,4 +1,4 @@
-﻿namespace WebAppRESTAPI.Models.Auth
+﻿namespace WebAppRESTAPI.Models.Static
 {
     public static class UserRoles
     {

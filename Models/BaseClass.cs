@@ -1,5 +1,6 @@
 ﻿namespace WebAppRESTAPI.Models
 {
+    
     public class BaseClass
     {
         public DateTime CreatedDate { get; set; }
